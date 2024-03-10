@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/uniform_strip">
+
+    <fragment
+        android:id="@+id/uniform_strip"
+        android:name="even.pierre.ledcontroler.ui.tools.UniformStripFragment"
+        android:label="@string/uniform_strip"
+        tools:layout="@layout/fragment_uniform_strip" />
+
+    <fragment
+        android:id="@+id/manual_setup"
+        android:name="even.pierre.ledcontroler.ui.tools.ManualSetupFragment"
+        android:label="@string/manual_setup"
+        tools:layout="@layout/fragment_manual_setup" />
+
+    <fragment
+        android:id="@+id/panner_strip"
+        android:name="even.pierre.ledcontroler.ui.tools.PannerStripFragment"
+        android:label="@string/panner_strip"
+        tools:layout="@layout/fragment_panner_strip" />
+</navigation>
