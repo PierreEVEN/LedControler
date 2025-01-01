@@ -338,7 +338,7 @@ GameObject:
   - component: {fileID: 6398519473757850090}
   - component: {fileID: 7309400916316906282}
   m_Layer: 5
-  m_Name: TempApp
+  m_Name: Panner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

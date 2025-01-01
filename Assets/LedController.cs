@@ -12,14 +12,12 @@ public enum MessageType
 public class LedController : MonoBehaviour
 {
     private BluetoothHelper helper;
-    private bool isScanning;
-    private bool isConnecting;
 
     public GameObject SelectDeviceMenu;
     GameObject select_device_menu;
     public GameObject container;
 
-    public GameObject temp_app;
+    public GameObject appMenu;
 
     void Start()
     {
@@ -50,20 +48,18 @@ public class LedController : MonoBehaviour
 
     void OnScanEnded(BluetoothHelper helper, LinkedList<BluetoothDevice> devices)
     {
-        this.isScanning = false;
         Debug.LogError("ScanEnded");
         select_device_menu.GetComponent<FillDeviceList>().Fill(devices, this);
     }
 
     void OnConnected(BluetoothHelper helper)
     {
-        isConnecting = false;
         helper.StartListening();
 
         container.transform.DetachChildren();
-        select_device_menu = Instantiate(temp_app);
+        select_device_menu = Instantiate(appMenu);
         select_device_menu.transform.parent = container.transform;
-        select_device_menu.GetComponent<TempApp>().Init(this);
+        select_device_menu.GetComponent<AppMenu>().Init(this);
     }
 
     public void SendMessage(MessageType message_type, int index, string payload = "")
@@ -75,7 +71,6 @@ public class LedController : MonoBehaviour
 
     void OnConnectionFailed(BluetoothHelper helper)
     {
-        isConnecting = false;
         Debug.LogError("Connection lost");
     }
 
@@ -85,7 +80,7 @@ public class LedController : MonoBehaviour
         container.transform.DetachChildren();
         select_device_menu = Instantiate(SelectDeviceMenu);
         select_device_menu.transform.parent = container.transform;
-        isScanning = helper.ScanNearbyDevices();
+        helper.ScanNearbyDevices();
     }
 
     public void TryConnectToDevice(BluetoothDevice device)
@@ -94,11 +89,10 @@ public class LedController : MonoBehaviour
         try
         {
             helper.Connect();
-            isConnecting = true;
         }
         catch (Exception)
         {
-            isConnecting = false;
+            ScanForDevices();
         }
     }
 

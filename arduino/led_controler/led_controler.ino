@@ -70,7 +70,7 @@ void loop()
       String message_value;
       String payload;
 
-      Serial.println(recv_char);
+      //Serial.println(recv_char);
 
       for (int i = 0; i < recv_data.length(); ++i) {
         if (recv_data[i] == ';')
@@ -87,12 +87,12 @@ void loop()
           }
         }
       }
-      Serial.println(message_type + " : " + message_value + " : " + payload);
+      //Serial.println(message_type + " : " + message_value + " : " + payload);
 
       switch (message_type.toInt()) {
         case MESSAGE_TYPE_SET_MODE:
           set_program<DefaultLedProgram>();
-          Serial.println(String("Set mode ") + message_value);
+          //Serial.println(String("Set mode ") + message_value);
           break;
         case MESSAGE_TYPE_SET_COLOR:
           {
@@ -114,13 +114,13 @@ void loop()
               }
             }
 
-            Serial.println(String("Set color #") + message_value + " : " + r + "," + g + "," + b);
+            //Serial.println(String("Set color #") + message_value + " : " + r + "," + g + "," + b);
             if (current_program)
               current_program->set_color_value(message_value.toInt(), r.toInt(), g.toInt(), b.toInt());
           }
           break;
         case MESSAGE_TYPE_SET_INT:
-          Serial.println(String("Set int #") + message_value + " : " + payload);
+          //Serial.println(String("Set int #") + message_value + " : " + payload);
           if (current_program)
             current_program->set_int_value(message_value.toInt(), payload.toInt());
           break;
