@@ -15,7 +15,7 @@ CRGB leds[NUM_LEDS];
 SoftwareSerial mySerial(rxPin, txPin);
 
 LedProgram* current_program = nullptr;
-
+unsigned long last_update_millis = 0;
 
 void setup()
 {
@@ -30,7 +30,7 @@ void setup()
   FastLED.addLeds<LED_TYPE, ledPin, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(BRIGHTNESS);
 
-  set_program<DefaultLedProgram>();
+  set_program<UniformColorProgram>();
   udpate_leds();
 }
 
@@ -44,9 +44,7 @@ void set_program() {
 void udpate_leds() {
   if (!current_program)
     return;
-  for(int i = 0; i < NUM_LEDS; ++i) {
-    leds[i] = current_program->get_led_color(i);
-  }
+  current_program->update_leds(NUM_LEDS, leds);
   FastLED.show();
 }
 
@@ -59,6 +57,7 @@ String recv_data;
 void loop()
 {
   while(mySerial.available()) {
+    last_update_millis = millis();
     char recv_char = (char)mySerial.read();
     if (recv_char == '\n') {
       if (recv_data.length() < 2 || recv_data[1] != ';') {
@@ -87,12 +86,20 @@ void loop()
           }
         }
       }
-      //Serial.println(message_type + " : " + message_value + " : " + payload);
+      mySerial.println(recv_data);
+      Serial.println(message_type + " : " + message_value + " : " + payload);
 
       switch (message_type.toInt()) {
         case MESSAGE_TYPE_SET_MODE:
-          set_program<DefaultLedProgram>();
-          //Serial.println(String("Set mode ") + message_value);
+          Serial.println(String("Set mode ") + message_value);
+          switch (message_value.toInt()) {
+            case 0:
+              set_program<UniformColorProgram>();
+              break;
+            case 1:
+              set_program<PannerProgram>();
+              break;
+          }
           break;
         case MESSAGE_TYPE_SET_COLOR:
           {
@@ -131,5 +138,7 @@ void loop()
     else
       recv_data += recv_char;
   }
+  if (millis() - last_update_millis > 300)
+    udpate_leds();
 }
 

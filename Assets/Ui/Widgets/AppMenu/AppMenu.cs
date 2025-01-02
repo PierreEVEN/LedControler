@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Xml.Linq;
 using UnityEngine;
 
 public class AppMenu : MonoBehaviour
@@ -24,7 +20,8 @@ public class AppMenu : MonoBehaviour
     {
         container.transform.DetachChildren();
         GameObject mode = null;
-        switch (dropDown.GetComponent<TMPro.TMP_Dropdown>().value)
+        int new_mode = dropDown.GetComponent<TMPro.TMP_Dropdown>().value;
+        switch (new_mode)
         {
             case 0:
                 mode = Instantiate(widgetUniformColor);
@@ -36,8 +33,8 @@ public class AppMenu : MonoBehaviour
         mode.transform.parent = container.transform;
         foreach (var comp in mode.GetComponents<AppBase>())
             comp.Init(parent);
+        parent.SendMessage(MessageType.SetMode, new_mode);
     }
-
 }
 
 public class AppBase : MonoBehaviour
@@ -49,4 +46,13 @@ public class AppBase : MonoBehaviour
     }
 
     public LedController GetParent() { return parent; }
+
+    public void update_int(int index, int value)
+    {
+        GetParent().SendMessage(MessageType.SetInt, index, index.ToString());
+    }
+    public void update_color(int index, Color value)
+    {
+        GetParent().SendMessage(MessageType.SetColor, index, ((int)(value.r * 255)).ToString() + "," + ((int)(value.g * 255)).ToString() + "," + ((int)(value.b * 255)).ToString());
+    }
 }

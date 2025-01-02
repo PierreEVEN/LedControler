@@ -1,6 +1,9 @@
 using ArduinoBluetoothAPI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
 public enum MessageType
@@ -41,14 +44,35 @@ public class LedController : MonoBehaviour
         }
     }
 
+    Dictionary<string, float> unreceived_messages = new Dictionary<string, float>();
+
+    private void Update()
+    {
+        /*
+        var copy = unreceived_messages.ToDictionary(entry => entry.Key, entry => entry.Value);
+
+        foreach (var entry in copy)
+        {
+            var fst = unreceived_messages.First();
+            if (Time.realtimeSinceStartup - fst.Value > 1.0f)
+                unreceived_messages.Remove(fst.Key);
+            else
+                helper.SendData(fst.Key);
+        }*/
+    }
+
     void OnDataReceived(BluetoothHelper helper)
     {
-        helper.Read();
+        string received = helper.Read();
+        unreceived_messages.Remove(received);
+
+        string sent_text;
+        sent_text = (4).ToString() + ";" + 5.ToString() + ";" + 6.ToString();
+        helper.SendData(sent_text);
     }
 
     void OnScanEnded(BluetoothHelper helper, LinkedList<BluetoothDevice> devices)
     {
-        Debug.LogError("ScanEnded");
         select_device_menu.GetComponent<FillDeviceList>().Fill(devices, this);
     }
 
@@ -66,6 +90,7 @@ public class LedController : MonoBehaviour
     {
         string sent_text;
         sent_text = ((int)message_type).ToString() + ";" + index.ToString() + ";" + payload;
+        //unreceived_messages.Add(sent_text, Time.realtimeSinceStartup);
         helper.SendData(sent_text);
     }
 
