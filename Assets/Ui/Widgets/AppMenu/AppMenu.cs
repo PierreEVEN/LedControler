@@ -49,7 +49,7 @@ public class AppBase : MonoBehaviour
 
     public void update_int(int index, int value)
     {
-        GetParent().SendMessage(MessageType.SetInt, index, index.ToString());
+        GetParent().SendMessage(MessageType.SetInt, index, value.ToString());
     }
     public void update_color(int index, Color value)
     {

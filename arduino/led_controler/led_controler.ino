@@ -1,3 +1,4 @@
+
 #include <SoftwareSerial.h>
 #include <FastLED.h>
 #include "led_program.hpp"
@@ -86,8 +87,8 @@ void loop()
           }
         }
       }
-      mySerial.println(recv_data);
-      Serial.println(message_type + " : " + message_value + " : " + payload);
+      //mySerial.println(recv_data);
+      //Serial.println(message_type + " : " + message_value + " : " + payload);
 
       switch (message_type.toInt()) {
         case MESSAGE_TYPE_SET_MODE:
@@ -121,13 +122,13 @@ void loop()
               }
             }
 
-            //Serial.println(String("Set color #") + message_value + " : " + r + "," + g + "," + b);
+            Serial.println(String("Set color #") + message_value + " : " + r + "," + g + "," + b);
             if (current_program)
               current_program->set_color_value(message_value.toInt(), r.toInt(), g.toInt(), b.toInt());
           }
           break;
         case MESSAGE_TYPE_SET_INT:
-          //Serial.println(String("Set int #") + message_value + " : " + payload);
+          Serial.println(String("Set int #") + message_value + " : " + payload);
           if (current_program)
             current_program->set_int_value(message_value.toInt(), payload.toInt());
           break;
@@ -141,4 +142,3 @@ void loop()
   if (millis() - last_update_millis > 300)
     udpate_leds();
 }
-

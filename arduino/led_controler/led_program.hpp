@@ -33,6 +33,8 @@ class UniformColorProgram : public LedProgram {
 };
 
 
+ #define TWO_PI 6.283185307179586476925286766559
+
 
 class PannerProgram : public LedProgram {
   
@@ -55,7 +57,7 @@ class PannerProgram : public LedProgram {
     else
       colorB = CRGB(r, g, b);
   }
-
+  
   void update_leds(uint16_t num_led, CRGB* leds) override {
     CHSV a = rgb2hsv_approximate(colorA);
     CHSV b = rgb2hsv_approximate(colorB);
@@ -63,13 +65,12 @@ class PannerProgram : public LedProgram {
 
     for (int p = 0; p < spacing; ++p) {
 
-      float state = sin(t + (float)p / spacing) * 0.5 + 0.5;
+      float state = sin(t + (float)p / spacing * TWO_PI) * 0.5 + 0.5;
       CRGB col = CRGB(lerp(colorA.r, colorB.r, state), lerp(colorA.g, colorB.g, state), lerp(colorA.b, colorB.b, state));
 
 
-      for(int i = 0; i < num_led; ++i) {
-      
-
+      for(int offset = p; offset < num_led; offset += spacing) {
+        leds[offset] = col;
       }
     }
   }

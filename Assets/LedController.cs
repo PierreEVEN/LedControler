@@ -27,7 +27,6 @@ public class LedController : MonoBehaviour
         try
         {
             BluetoothHelper.BLE = false;
-           
             helper = BluetoothHelper.GetInstance();
             helper.OnConnected += OnConnected;
             helper.OnConnectionFailed += OnConnectionFailed;
